@@ -5,6 +5,8 @@
 #include <queue>
 #include <limits>
 
+const int INF = 1e9;
+
 class Dinic {
 public:
     struct Edge {
@@ -18,7 +20,9 @@ public:
     void add_edge(int from, int to, int cap);
     int dinic(int s, int t);
 
+    std::vector<bool> getReachableNodes(int source);
 private:
+    int n;
     std::vector<std::vector<Edge>> adj;
     std::vector<int> level;
     std::vector<int> ptr;

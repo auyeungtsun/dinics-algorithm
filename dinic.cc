@@ -5,8 +5,6 @@
 
 using namespace std;
 
-const int INF = 1e9;
-
 /**
  * @brief Constructor for the Dinic class.
  * 
@@ -17,7 +15,9 @@ const int INF = 1e9;
  * `level`: Stores the level of each vertex in the layered network constructed by BFS.
  * `ptr`: Stores the current edge index in the adjacency list for each vertex during DFS.
  */
-Dinic::Dinic(int n) : adj(n), level(n), ptr(n) {}
+Dinic::Dinic(int n) : adj(n), level(n), ptr(n) {
+    this->n = n;
+}
 
 /**
  * @brief Adds an edge to the flow network.
@@ -83,4 +83,30 @@ int Dinic::dinic(int s, int t) {
         }
     }
     return f;
+}
+
+/**
+ * @brief Performs a breadth-first search to find all nodes reachable from a given source in the residual graph.
+ * 
+ * @param source The source vertex to start the BFS from.
+ * @return A vector of booleans where each element represents whether the corresponding node is reachable from the source.
+ * @note This function is used to find the minimum cut after the max flow has been computed.
+ *       Nodes that are reachable from the source in the residual graph are part of one side of the min cut.
+ */
+std::vector<bool> Dinic::getReachableNodes(int source) {
+    std::vector<bool> visited(n, false);
+    std::vector<int> q;
+    q.push_back(source);
+    visited[source] = true;
+    int head = 0;
+    while(head < q.size()){
+      int u = q[head++];
+      for(auto& edge : adj[u]){
+        if(edge.flow < edge.cap && !visited[edge.to]){
+          visited[edge.to] = true;
+          q.push_back(edge.to);
+        }
+      }
+    }
+    return visited;
 }
